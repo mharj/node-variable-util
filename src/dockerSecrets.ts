@@ -10,20 +10,22 @@ export function setDockerSecretsPath(path: string) {
 }
 
 function getDockerSecretPath(name: string, config?: IParameters): string {
-	return path.join(dockerSecretsBasePath, config && config.secretsFileLowerCase ? name.toLowerCase() : name);
+	return path.join(path.resolve(dockerSecretsBasePath), config && config.secretsFileLowerCase ? name.toLowerCase() : name);
 }
 
-let dockerSecrets: Record<string, string> = {};
+let dockerSecrets: Record<string, string | undefined> = {};
 export function getVariableFromDockerSecret(logger: LoggerLike | undefined, name: string, config?: IParameters): string | undefined {
 	if (name in dockerSecrets) {
-		logger && logger.info(`config ${name} from docker secrets`);
-		return dockerSecrets[name];
+		if (dockerSecrets[`${name}`]) {
+			logger && logger.info(`config ${name} from docker secrets`);
+		}
+		return dockerSecrets[`${name}`];
 	}
+	dockerSecrets[`${name}`] = undefined;
 	const path = getDockerSecretPath(name, config);
-	if (fs.existsSync(getDockerSecretPath(name, config))) {
+	if (fs.existsSync(path)) {
 		logger && logger.info(`config ${name} from docker secrets`);
-		dockerSecrets[name] = fs.readFileSync(path).toString();
-		return dockerSecrets[name];
+		dockerSecrets[`${name}`] = fs.readFileSync(path).toString();
 	}
-	return undefined;
+	return dockerSecrets[`${name}`];
 }
