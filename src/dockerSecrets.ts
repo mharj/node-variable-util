@@ -15,16 +15,16 @@ function getDockerSecretPath(name: string, config?: IParameters): string {
 
 let dockerSecrets: Record<string, string | undefined> = {};
 export function getVariableFromDockerSecret(logger: LoggerLike | undefined, name: string, config?: IParameters): string | undefined {
+	const path = getDockerSecretPath(name, config);
 	if (name in dockerSecrets) {
 		if (dockerSecrets[`${name}`]) {
-			logger && logger.info(`config ${name} from docker secrets`);
+			logger && logger.info(`variables: ${name} from ${path}`);
 		}
 		return dockerSecrets[`${name}`];
 	}
 	dockerSecrets[`${name}`] = undefined;
-	const path = getDockerSecretPath(name, config);
 	if (fs.existsSync(path)) {
-		logger && logger.info(`config ${name} from docker secrets`);
+		logger && logger.info(`variables: ${name} from ${path}`);
 		dockerSecrets[`${name}`] = fs.readFileSync(path).toString();
 	}
 	return dockerSecrets[`${name}`];

@@ -46,11 +46,11 @@ export async function getConfigVariable(name: string, defaultValue?: string | un
 				break;
 			}
 			default:
-				throw new TypeError(`unknown check type ${checkType}`);
+				throw new TypeError(`variables: unknown check type ${checkType}`);
 		}
 	}
 	if (defaultValue) {
-		logger && logger.info(`config ${name} from default value`);
+		logger && logger.info(`variables: ${name} from default value`);
 		return defaultValue;
 	}
 	return undefined;

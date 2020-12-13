@@ -16,12 +16,12 @@ export function getVariableFromSettingsFile(logger: LoggerLike | undefined, name
 	const fileName = getSettingsFilePath();
 	if (!settings) {
 		if (fileName && fs.existsSync(fileName)) {
-			logger && logger.debug(`load settings from ${fileName}`);
+			logger && logger.debug(`variables: load settings from ${fileName}`);
 			settings = JSON.parse(fs.readFileSync(fileName).toString());
 		}
 	}
 	if (settings && name in settings && settings[`${name}`] !== null) {
-		logger && logger.info(`config ${name} from ${fileName}`);
+		logger && logger.info(`variables: ${name} from ${fileName}`);
 		return '' + settings[`${name}`];
 	}
 	return undefined;
