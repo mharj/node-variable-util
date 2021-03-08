@@ -10,6 +10,7 @@ dotEnvConfig();
 
 export interface IParameters {
 	secretsFileLowerCase?: boolean;
+	showValue?: boolean;
 }
 
 let logger: LoggerLike | undefined;
@@ -18,6 +19,13 @@ export function setLogger(newLogger: LoggerLike) {
 }
 // TODO: build function to change check order
 const checkOrder = ['dockersecret', 'env', 'settingsfile'];
+
+export function printValue(value: string | undefined, config: IParameters | undefined) {
+	if ( ! config || ! config.showValue) {
+		return '';
+	}
+	return ` [${value}]`;
+}
 
 export async function getConfigVariable(name: string, defaultValue: string, config?: IParameters): Promise<string>;
 export async function getConfigVariable(name: string, defaultValue?: string | undefined, config?: IParameters): Promise<string | undefined>;
@@ -50,7 +58,7 @@ export async function getConfigVariable(name: string, defaultValue?: string | un
 		}
 	}
 	if (defaultValue) {
-		logger && logger.info(`variables: ${name} from default value`);
+		logger && logger.info(`variables: ${name}${printValue(defaultValue, config)} from default value`);
 		return defaultValue;
 	}
 	return undefined;

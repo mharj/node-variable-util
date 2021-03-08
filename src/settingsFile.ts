@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import {IParameters} from '.';
+import {IParameters, printValue} from '.';
 import {LoggerLike} from './loggerLike';
 let settingsFile = './settings.json';
 export function setSettingsFile(file: string) {
@@ -21,7 +21,7 @@ export function getVariableFromSettingsFile(logger: LoggerLike | undefined, name
 		}
 	}
 	if (settings && name in settings && settings[`${name}`] !== null) {
-		logger && logger.info(`variables: ${name} from ${fileName}`);
+		logger && logger.info(`variables: ${name}${printValue(settings[`${name}`], config)} from ${fileName}`);
 		return '' + settings[`${name}`];
 	}
 	return undefined;
