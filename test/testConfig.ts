@@ -40,6 +40,14 @@ describe('config variable', () => {
 			infoSpy.resetHistory();
 		});
 	});
+	describe('default url sanitize value test', async () => {
+		it('should return default value', async function () {
+			expect(await getConfigVariable('test', 'http://user:password@localhost/path', {sanitizeUrl: true})).to.be.eq('http://user:password@localhost/path');
+			expect(infoSpy.calledOnce).be.be.eq(true);
+			expect(infoSpy.getCall(0).args[0]).to.be.eq(`variables: test [http://****:********@localhost/path] from default value`);
+			infoSpy.resetHistory();
+		});
+	});
 	describe('undefined value test', async () => {
 		it('should return undefined value', async function () {
 			expect(await getConfigVariable('test')).to.be.undefined;
@@ -49,12 +57,16 @@ describe('config variable', () => {
 		it('should return settings value', async function () {
 			expect(await getConfigVariable('SETTINGS_VARIABLE', 'default')).to.be.eq('settings_file');
 			expect(infoSpy.calledOnce).be.be.eq(true);
-			expect(infoSpy.getCall(0).args[0]).to.be.eq("variables: SETTINGS_VARIABLE from D:\\GitHub\\node-variable-util\\test\\testSettings.json");
+			expect(infoSpy.getCall(0).args[0])
+				.to.be.a('string')
+				.and.satisfy((msg: string) => msg.startsWith('variables: SETTINGS_VARIABLE from'));
 			infoSpy.resetHistory();
 
 			expect(await getConfigVariable('SETTINGS_VARIABLE', 'default', {showValue: true})).to.be.eq('settings_file');
 			expect(infoSpy.calledOnce).be.be.eq(true);
-			expect(infoSpy.getCall(0).args[0]).to.be.eq("variables: SETTINGS_VARIABLE [settings_file] from D:\\GitHub\\node-variable-util\\test\\testSettings.json");
+			expect(infoSpy.getCall(0).args[0])
+				.to.be.a('string')
+				.and.satisfy((msg: string) => msg.startsWith('variables: SETTINGS_VARIABLE [settings_file] from'));
 			infoSpy.resetHistory();
 		});
 	});
@@ -62,12 +74,12 @@ describe('config variable', () => {
 		it('should return env value', async function () {
 			expect(await getConfigVariable('ENV_VALUE', 'default')).to.be.eq('env_value');
 			expect(infoSpy.calledOnce).be.be.eq(true);
-			expect(infoSpy.getCall(0).args[0]).to.be.eq("variables: ENV_VALUE from process.env.ENV_VALUE");
+			expect(infoSpy.getCall(0).args[0]).to.be.eq('variables: ENV_VALUE from process.env.ENV_VALUE');
 			infoSpy.resetHistory();
 
-			expect(await getConfigVariable('ENV_VALUE', 'default',{showValue: true})).to.be.eq('env_value');
+			expect(await getConfigVariable('ENV_VALUE', 'default', {showValue: true})).to.be.eq('env_value');
 			expect(infoSpy.calledOnce).be.be.eq(true);
-			expect(infoSpy.getCall(0).args[0]).to.be.eq("variables: ENV_VALUE [env_value] from process.env.ENV_VALUE");
+			expect(infoSpy.getCall(0).args[0]).to.be.eq('variables: ENV_VALUE [env_value] from process.env.ENV_VALUE');
 			infoSpy.resetHistory();
 		});
 	});
@@ -79,12 +91,16 @@ describe('config variable', () => {
 				}),
 			).to.be.eq('docker_value');
 			expect(infoSpy.calledOnce).be.be.eq(true);
-			expect(infoSpy.getCall(0).args[0]).to.be.eq("variables: DOCKERSECRET from D:\\GitHub\\node-variable-util\\test\\dockersecret");
+			expect(infoSpy.getCall(0).args[0])
+				.to.be.a('string')
+				.and.satisfy((msg: string) => msg.startsWith('variables: DOCKERSECRET from'));
 			infoSpy.resetHistory();
 
-			expect(await getConfigVariable('dockersecret', 'default',{showValue: true})).to.be.eq('docker_value');
+			expect(await getConfigVariable('dockersecret', 'default', {showValue: true})).to.be.eq('docker_value');
 			expect(infoSpy.calledOnce).be.be.eq(true);
-			expect(infoSpy.getCall(0).args[0]).to.be.eq("variables: dockersecret [docker_value] from D:\\GitHub\\node-variable-util\\test\\dockersecret");
+			expect(infoSpy.getCall(0).args[0])
+				.to.be.a('string')
+				.and.satisfy((msg: string) => msg.startsWith('variables: dockersecret [docker_value] from'));
 			infoSpy.resetHistory();
 		});
 	});
