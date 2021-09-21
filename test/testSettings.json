@@ -1,3 +1,4 @@
 {
-    "SETTINGS_VARIABLE": "settings_file"
+    "SETTINGS_VARIABLE1": "settings_file",
+    "SETTINGS_VARIABLE2": "settings_file"
 }
