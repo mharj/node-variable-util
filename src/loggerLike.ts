@@ -1,5 +1,5 @@
 export interface LoggerLike {
-	trace(message: any, ...args: any[]): void;
+	trace?(message: any, ...args: any[]): void;
 
 	debug(message: any, ...args: any[]): void;
 

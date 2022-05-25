@@ -24,6 +24,7 @@
         "strictNullChecks": true,
         "suppressImplicitAnyIndexErrors": true,
         "noUnusedLocals": true,
+        "strict": true,
     },
     "include": [
         "src"
