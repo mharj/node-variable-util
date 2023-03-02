@@ -1,10 +1,15 @@
 process.env.NODE_ENV = 'test';
 process.env.ENV_VALUE = 'env_value';
-import {expect} from 'chai';
+import * as chai from 'chai';
+import * as chaiAsPromised from 'chai-as-promised';
 import 'mocha';
 import * as sinon from 'sinon';
 import {getConfigVariable, setSettingsFile, setDockerSecretsPath, setLogger} from '../src/';
 import {LoggerLike} from '../src/loggerLike';
+
+chai.use(chaiAsPromised);
+
+const expect = chai.expect;
 
 const debugSpy = sinon.spy();
 const infoSpy = sinon.spy();
@@ -107,6 +112,14 @@ describe('config variable', () => {
 	describe('test logging', async () => {
 		it('should return env value', async function () {
 			expect(await getConfigVariable('ENV_VALUE', 'default')).to.be.eq('env_value');
+		});
+	});
+	describe('test undefined throws', async () => {
+		it('should return env value', async function () {
+			await expect(getConfigVariable('NOT_FOUND', undefined, {undefinedThrows: true})).to.be.rejectedWith(
+				Error,
+				`variables: NOT_FOUND is undefined`,
+			);
 		});
 	});
 });

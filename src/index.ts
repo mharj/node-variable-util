@@ -13,7 +13,10 @@ export interface IParameters {
 	secretsFileLowerCase?: boolean;
 	showValue?: boolean;
 	sanitizeUrl?: boolean;
+	undefinedThrows?: boolean;
 }
+
+export type IThrowsUndefinedParameters = Omit<IParameters, 'undefinedThrows'> & {undefinedThrows: true};
 
 let logger: LoggerLike | undefined;
 export function setLogger(newLogger: LoggerLike) {
@@ -46,6 +49,7 @@ export function printValue(value: string | undefined, config: IParameters | unde
 }
 
 export async function getConfigVariable(name: string, defaultValue: string, config?: IParameters): Promise<string>;
+export async function getConfigVariable(name: string, defaultValue: string | undefined, config: IThrowsUndefinedParameters): Promise<string>;
 export async function getConfigVariable(name: string, defaultValue?: string | undefined, config?: IParameters): Promise<string | undefined>;
 export async function getConfigVariable(name: string, defaultValue?: string | undefined, config?: IParameters): Promise<string | undefined> {
 	let output: string | undefined;
@@ -82,6 +86,9 @@ export async function getConfigVariable(name: string, defaultValue?: string | un
 	if (!output && defaultValue) {
 		logger && logger.info(`variables: ${name}${printValue(defaultValue, config)} from default value`);
 		output = defaultValue;
+	}
+	if (!output && config && config.undefinedThrows) {
+		throw new Error(`variables: ${name} is undefined`);
 	}
 	return output;
 }
