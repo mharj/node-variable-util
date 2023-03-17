@@ -34,12 +34,14 @@ describe('config variable', () => {
 
 	describe('default value test', async () => {
 		it('should return default value', async function () {
-			expect(await getConfigVariable('test', 'default')).to.be.eq('default');
+			const call1: Promise<string> = getConfigVariable('test', 'default');
+			await expect(call1).to.be.eventually.eq('default');
 			expect(infoSpy.calledOnce).be.be.eq(true);
 			expect(infoSpy.getCall(0).args[0]).to.be.eq('variables: test from default value');
 			infoSpy.resetHistory();
 
-			expect(await getConfigVariable('test', 'default', {showValue: true})).to.be.eq('default');
+			const call2: Promise<string> = getConfigVariable('test', 'default', {showValue: true});
+			await expect(call2).to.be.eventually.eq('default');
 			expect(infoSpy.calledOnce).be.be.eq(true);
 			expect(infoSpy.getCall(0).args[0]).to.be.eq('variables: test [default] from default value');
 			infoSpy.resetHistory();
@@ -47,7 +49,8 @@ describe('config variable', () => {
 	});
 	describe('default url sanitize value test', async () => {
 		it('should return default value', async function () {
-			expect(await getConfigVariable('test', 'http://user:password@localhost/path', {sanitizeUrl: true})).to.be.eq('http://user:password@localhost/path');
+			const call: Promise<string> = getConfigVariable('test', 'http://user:password@localhost/path', {sanitizeUrl: true});
+			await expect(call).to.be.eventually.eq('http://user:password@localhost/path');
 			expect(infoSpy.calledOnce).be.be.eq(true);
 			expect(infoSpy.getCall(0).args[0]).to.be.eq(`variables: test [http://****:********@localhost/path] from default value`);
 			infoSpy.resetHistory();
@@ -55,19 +58,22 @@ describe('config variable', () => {
 	});
 	describe('undefined value test', async () => {
 		it('should return undefined value', async function () {
-			expect(await getConfigVariable('test')).to.be.undefined;
+			const call: Promise<string | undefined> = getConfigVariable('test');
+			await expect(call).to.be.eventually.undefined;
 		});
 	});
 	describe('settings file value test', async () => {
 		it('should return settings value', async function () {
-			expect(await getConfigVariable('SETTINGS_VARIABLE', 'default')).to.be.eq('settings_file');
+			const call1: Promise<string> = getConfigVariable('SETTINGS_VARIABLE', 'default');
+			await expect(call1).to.be.eventually.eq('settings_file');
 			expect(infoSpy.calledOnce).be.be.eq(true);
 			expect(infoSpy.getCall(0).args[0])
 				.to.be.a('string')
 				.and.satisfy((msg: string) => msg.startsWith('variables: SETTINGS_VARIABLE from'));
 			infoSpy.resetHistory();
 
-			expect(await getConfigVariable('SETTINGS_VARIABLE', 'default', {showValue: true})).to.be.eq('settings_file');
+			const call2: Promise<string> = getConfigVariable('SETTINGS_VARIABLE', 'default', {showValue: true});
+			await expect(call2).to.be.eventually.eq('settings_file');
 			expect(infoSpy.calledOnce).be.be.eq(true);
 			expect(infoSpy.getCall(0).args[0])
 				.to.be.a('string')
@@ -77,12 +83,14 @@ describe('config variable', () => {
 	});
 	describe('env value test', async () => {
 		it('should return env value', async function () {
-			expect(await getConfigVariable('ENV_VALUE', 'default')).to.be.eq('env_value');
+			const call1: Promise<string> = getConfigVariable('ENV_VALUE', 'default');
+			await expect(call1).to.be.eventually.eq('env_value');
 			expect(infoSpy.calledOnce).be.be.eq(true);
 			expect(infoSpy.getCall(0).args[0]).to.be.eq('variables: ENV_VALUE from process.env.ENV_VALUE');
 			infoSpy.resetHistory();
 
-			expect(await getConfigVariable('ENV_VALUE', 'default', {showValue: true})).to.be.eq('env_value');
+			const call2: Promise<string> = getConfigVariable('ENV_VALUE', 'default', {showValue: true});
+			await expect(call2).to.be.eventually.eq('env_value');
 			expect(infoSpy.calledOnce).be.be.eq(true);
 			expect(infoSpy.getCall(0).args[0]).to.be.eq('variables: ENV_VALUE [env_value] from process.env.ENV_VALUE');
 			infoSpy.resetHistory();
@@ -90,18 +98,18 @@ describe('config variable', () => {
 	});
 	describe('docker secrets value test', async () => {
 		it('should return docker secrets value', async function () {
-			expect(
-				await getConfigVariable('DOCKERSECRET', 'default', {
-					secretsFileLowerCase: true,
-				}),
-			).to.be.eq('docker_value');
+			const call1: Promise<string> = getConfigVariable('DOCKERSECRET', 'default', {
+				secretsFileLowerCase: true,
+			});
+			await expect(call1).to.be.eventually.eq('docker_value');
 			expect(infoSpy.calledOnce).be.be.eq(true);
 			expect(infoSpy.getCall(0).args[0])
 				.to.be.a('string')
 				.and.satisfy((msg: string) => msg.startsWith('variables: DOCKERSECRET from'));
 			infoSpy.resetHistory();
 
-			expect(await getConfigVariable('dockersecret', 'default', {showValue: true})).to.be.eq('docker_value');
+			const call2: Promise<string> = getConfigVariable('dockersecret', 'default', {showValue: true});
+			expect(call2).to.be.eventually.eq('docker_value');
 			expect(infoSpy.calledOnce).be.be.eq(true);
 			expect(infoSpy.getCall(0).args[0])
 				.to.be.a('string')
@@ -111,18 +119,18 @@ describe('config variable', () => {
 	});
 	describe('test logging', async () => {
 		it('should return env value', async function () {
-			expect(await getConfigVariable('ENV_VALUE', 'default')).to.be.eq('env_value');
+			const call: Promise<string> = getConfigVariable('ENV_VALUE', 'default');
+			await expect(call).to.be.eventually.eq('env_value');
 		});
 	});
 	describe('test undefined throws', async () => {
 		it('should throw error', async function () {
-			await expect(getConfigVariable('NOT_FOUND', undefined, {undefinedThrows: true})).to.be.rejectedWith(Error, `variables: NOT_FOUND is undefined`);
+			const call: Promise<string> = getConfigVariable('NOT_FOUND', undefined, {undefinedThrows: true});
+			await expect(call).to.be.rejectedWith(Error, `variables: NOT_FOUND is undefined`);
 		});
 		it('should throw custom error via callback', async function () {
-			await expect(getConfigVariable('NOT_FOUND', undefined, {undefinedThrows: () => new Error('custom error')})).to.be.rejectedWith(
-				Error,
-				`custom error`,
-			);
+			const call: Promise<string> = getConfigVariable('NOT_FOUND', undefined, {undefinedThrows: () => new Error('custom error')});
+			await expect(call).to.be.rejectedWith(Error, `custom error`);
 		});
 	});
 });
