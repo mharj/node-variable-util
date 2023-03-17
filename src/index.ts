@@ -9,8 +9,6 @@ import {getVariableFromSettingsFile} from './settingsFile';
 
 dotEnvConfig();
 
-type ThrowsUndefined = boolean | ((message: string) => Error);
-
 export interface IParameters {
 	secretsFileLowerCase?: boolean;
 	showValue?: boolean;
