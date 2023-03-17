@@ -115,10 +115,13 @@ describe('config variable', () => {
 		});
 	});
 	describe('test undefined throws', async () => {
-		it('should return env value', async function () {
-			await expect(getConfigVariable('NOT_FOUND', undefined, {undefinedThrows: true})).to.be.rejectedWith(
+		it('should throw error', async function () {
+			await expect(getConfigVariable('NOT_FOUND', undefined, {undefinedThrows: true})).to.be.rejectedWith(Error, `variables: NOT_FOUND is undefined`);
+		});
+		it('should throw custom error via callback', async function () {
+			await expect(getConfigVariable('NOT_FOUND', undefined, {undefinedThrows: () => new Error('custom error')})).to.be.rejectedWith(
 				Error,
-				`variables: NOT_FOUND is undefined`,
+				`custom error`,
 			);
 		});
 	});

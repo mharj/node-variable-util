@@ -13,7 +13,7 @@ export interface IParameters {
 	secretsFileLowerCase?: boolean;
 	showValue?: boolean;
 	sanitizeUrl?: boolean;
-	undefinedThrows?: boolean;
+	undefinedThrows?: boolean | ((message: string) => Error);
 }
 
 export type IThrowsUndefinedParameters = Omit<IParameters, 'undefinedThrows'> & {undefinedThrows: true};
@@ -88,7 +88,8 @@ export async function getConfigVariable(name: string, defaultValue?: string | un
 		output = defaultValue;
 	}
 	if (!output && config && config.undefinedThrows) {
-		throw new Error(`variables: ${name} is undefined`);
+		const message = `variables: ${name} is undefined`;
+		throw typeof config.undefinedThrows === 'function' ? config.undefinedThrows(message) : new Error(message);
 	}
 	return output;
 }
