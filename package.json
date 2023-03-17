@@ -1,6 +1,6 @@
 {
     "name": "mharj-node-variable-util",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "Utility to get variable from multiple resources",
     "main": "./dist/index.js",
     "scripts": {
