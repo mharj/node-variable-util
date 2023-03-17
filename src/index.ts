@@ -9,6 +9,8 @@ import {getVariableFromSettingsFile} from './settingsFile';
 
 dotEnvConfig();
 
+type ThrowsUndefined = boolean | ((message: string) => Error);
+
 export interface IParameters {
 	secretsFileLowerCase?: boolean;
 	showValue?: boolean;
@@ -16,7 +18,7 @@ export interface IParameters {
 	undefinedThrows?: boolean | ((message: string) => Error);
 }
 
-export type IThrowsUndefinedParameters = Omit<IParameters, 'undefinedThrows'> & {undefinedThrows: true};
+export type IThrowsUndefinedParameters = Omit<IParameters, 'undefinedThrows'> & ({undefinedThrows: true} | {undefinedThrows: (message: string) => Error});
 
 let logger: LoggerLike | undefined;
 export function setLogger(newLogger: LoggerLike) {
