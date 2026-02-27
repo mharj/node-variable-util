@@ -1,5 +1,7 @@
 # node-variable-util
 
+## Note: this is no longer maintained, @avanio/variable-util replaced this module.
+
 Utility to get variables for NodeJS from multiple resources
 
 Async check variable from
